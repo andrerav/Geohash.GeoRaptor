@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>Library</OutputType>		
+		<TargetFrameworks>net6.0;net5.0;netcoreapp3.1;netstandard2.0</TargetFrameworks>
+		<Description>
+			$(Description)
+
+			This package is a port of GeoRaptor from Python to C# and provides the ability to compress collections of geohashes to save space. 
+		</Description>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Include="./../../media/logo/logo.png" Pack="true" Visible="false" PackagePath="" />
+	</ItemGroup>
+</Project>
