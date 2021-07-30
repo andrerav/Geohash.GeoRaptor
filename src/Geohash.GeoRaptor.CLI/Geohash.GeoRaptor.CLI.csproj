@@ -1,7 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFrameworks>net6.0;net5.0;netcoreapp3.1;net48;net472</TargetFrameworks>
+		<TargetFrameworks>net6.0;net5.0;netcoreapp3.1</TargetFrameworks>
+		<PackAsTool>true</PackAsTool>
+		<ToolCommandName>georaptor</ToolCommandName>
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Geohash.GeoRaptor\Geohash.GeoRaptor.csproj" />
