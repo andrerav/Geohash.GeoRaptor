@@ -1,4 +1,4 @@
-# Geohash.GeoRaptor: .NET Geohash Compression Tool
+# Geohash.GeoRaptor: .NET Geohash Compression Tool <img src="https://raw.githubusercontent.com/andrerav/Geohash.GeoRaptor/main/media/logo/logo.png" width="48">
 _Note: This is a port of [ashwin711/georaptor](https://github.com/ashwin711/georaptor) to C#/.NET._
 
 Geohash.GeoRaptor is a geohash compression library for efficiently reducing the size of large geohash collections. If you are wondering what geohashes are all about, I can recommend checking out [this website by Movable Type](https://www.movable-type.co.uk/scripts/geohash.html) which explains geohashing in simple terms while at the same time providing a highly visual technical demo.
