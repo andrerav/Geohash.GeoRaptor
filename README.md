@@ -21,7 +21,7 @@ Geohash.GeoRaptor is a geohash compression library for efficiently reducing the 
       "w21xy8", "w21xyb", "w21xz0"
     };
 
-    var result = GeoRaptor.Compress(_geoHashes, 3, 4);
+    var result = GeoRaptor.Compress(geohashes, 3, 4);
 ```
 The above snippet of code will compress the input geohashes to a minimum precision of 3 and a maximum precision of 4. The result from this computation is `["w23b","w238","w21x","w21z","w21w"]` and is assigned to the `result` variable. 
 
