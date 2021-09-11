@@ -13,7 +13,7 @@ Geohash.GeoRaptor is a geohash compression library for efficiently reducing the 
 
 _TODO_
 
-# API Quickstart
+## API Quickstart
 ```csharp
 var geohashes = new HashSet<string>
 {
