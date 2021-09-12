@@ -10,12 +10,6 @@ Geohash.GeoRaptor is a geohash compression library for efficiently reducing the 
 | Geohash.GeoRaptor | [![image](https://img.shields.io/nuget/v/Geohash.GeoRaptor.svg)](https://www.nuget.org/packages/Geohash.GeoRaptor/) | Use this package to install GeoRaptor as a library in your C#/.NET project. |
 | Geohash.GeoRaptor.CLI | [![image](https://img.shields.io/nuget/v/Geohash.GeoRaptor.CLI.svg)](https://www.nuget.org/packages/Geohash.GeoRaptor.CLI/) | Use this package to install GeoRaptor as a dotnet command line tool (see [CLI quickstart](#command-line-quickstart) below). You can install this tool using the command `dotnet tool install --global Geohash.GeoRaptor.CLI`. |
 
-
-
-## Description
-
-_TODO_
-
 ## API Quickstart
 ```csharp
 var geohashes = new HashSet<string>
