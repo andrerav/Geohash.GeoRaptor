@@ -46,8 +46,7 @@ The compressed output is simply printed to stdout.
 
 Here is a complete list of available command line options:
 ```
-  -f, --input-file           Path to a text file with geohashes (one geohash per
-                             line)
+  -f, --input-file           Path to a text file with geohashes (one geohash per line)
 
   -l, --lowest-precision     Required. Lowest precision
 
