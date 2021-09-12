@@ -4,11 +4,12 @@
 		<TargetFrameworks>net6.0;net5.0;netcoreapp3.1</TargetFrameworks>
 		<PackAsTool>true</PackAsTool>
 		<ToolCommandName>georaptor</ToolCommandName>
+		<ApplicationIcon>./../../media/logo/logo.ico</ApplicationIcon>
 	</PropertyGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Geohash.GeoRaptor\Geohash.GeoRaptor.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-		<None Include="./../../media/logo/logo.png" Pack="true" Visible="false" PackagePath="" />
+		<None Include="./../../media/logo/logo.png" Pack="true" Visible="true" PackagePath="" />
 	</ItemGroup>
 </Project>
