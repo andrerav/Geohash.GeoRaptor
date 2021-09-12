@@ -32,4 +32,33 @@ var result = GeoRaptor.Compress(geohashes, 4, 5);
 Console.WriteLine(string.Join(", ", result.ToArray()));
 ```
 
+## Command line quickstart
+First install the [dotnet tool version](https://www.nuget.org/packages/Geohash.GeoRaptor.CLI/) of GeoRaptor:
+```
+dotnet tool install --global Geohash.GeoRaptor.CLI
+```
+Then execute the tool from the command line using the `georaptor` command:
+```
+georaptor --lowest-precision 3 --highest-precision 4 -f some_input_file.txt
+```
+You can also pipe data to the tool:
+```
+georaptor --lowest-precision 3 --highest-precision 4 < some_input_file.txt
+```
+The compressed output is simply printed to stdout.
 
+Here is a complete list of available command line options:
+```
+  -f, --input-file           Path to a text file with geohashes (one geohash per
+                             line)
+
+  -l, --lowest-precision     Required. Lowest precision
+
+  -h, --highest-precision    Required. Highest precision
+
+  -g, --output-geometry      Enable this to add WKB geometries to the output
+
+  --help                     Display this help screen.
+
+  --version                  Display version information.
+```
