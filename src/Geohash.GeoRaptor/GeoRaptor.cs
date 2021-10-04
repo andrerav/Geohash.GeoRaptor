@@ -4,6 +4,9 @@ using System.Linq;
 
 namespace Geohash.GeoRaptor
 {
+	/// <summary>
+	/// Geohash.GeoRaptor is a geohash compression library for efficiently reducing the size of large geohash collections. 
+	/// </summary>
 	public static class GeoRaptor
 	{
 		// Combination generator for a given geohash at the next level
@@ -15,7 +18,13 @@ namespace Geohash.GeoRaptor
 					select (str + $"{i}")).ToList();
 		}
 
-		// Recursive optimization of the geohash set
+		/// <summary>
+		/// Compresses the input set of geohashes within the given minimum and maximum precision levels.
+		/// </summary>
+		/// <param name="geohashes">A set of geohashes. Varying precision levels are ok</param>
+		/// <param name="minimumPrecision">The minimum precision level to maintain for the compressed output</param>
+		/// <param name="maximumPrecision">The maximum precision level to maintain for the compressed output</param>
+		/// <returns></returns>
 		public static HashSet<string> Compress(HashSet<string> geohashes, int minimumPrecision, int maximumPrecision)
 		{
 			var removed = new HashSet<string>();

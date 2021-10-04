@@ -2,11 +2,22 @@
 	<PropertyGroup>
 		<OutputType>Library</OutputType>		
 		<TargetFrameworks>net6.0;net5.0;netcoreapp3.1;netstandard2.0</TargetFrameworks>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<Description>
 			$(Description)
 
 			This package is a port of GeoRaptor from Python to C# and provides the ability to compress collections of geohashes to save space. 
 		</Description>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="vsxmd" Version="1.4.5">
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+		</PackageReference>
+	</ItemGroup>
+	<PropertyGroup>
+		<VsxmdAutoDeleteXml>True</VsxmdAutoDeleteXml>
+		<DocumentationMarkdown>$(MSBuildProjectDirectory)\README.md</DocumentationMarkdown>
 	</PropertyGroup>
 	<ItemGroup>
 		<None Include="./../../media/logo/logo.png" Pack="true" Visible="false" PackagePath="" />
