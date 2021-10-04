@@ -2,6 +2,11 @@
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
 		<TargetFrameworks>net6.0;net5.0;netcoreapp3.1</TargetFrameworks>
+		<Description>
+			$(Description)
+
+			This package is a port of GeoRaptor from Python to C# and provides the ability to compress collections of geohashes to save space.
+		</Description>		
 		<PackAsTool>true</PackAsTool>
 		<ToolCommandName>georaptor</ToolCommandName>
 		<ApplicationIcon>./../../media/logo/logo.ico</ApplicationIcon>

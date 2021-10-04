@@ -52,13 +52,18 @@ namespace Geohash.GeoRaptor.CLI
         /// <param name="compressed"></param>
         private static void OutputCompressedGeohashes(CommandLineOptions o, HashSet<string> compressed)
         {
+
+            var outputGeometry = o.OutputGeometry.HasValue && o.OutputGeometry.Value;
+            if (outputGeometry && o.AddHeaders == true)
+            {
+                Console.WriteLine("geohash" + o.Separator + "geometry");
+            }
             foreach (var g in compressed)
             {
-                if (o.OutputGeometry.HasValue && o.OutputGeometry.Value)
+                if (outputGeometry)
                 {
                     var geometry = BoundingBox(g);
-                    Console.WriteLine(g + ";" + geometry.AsText());
-
+                    Console.WriteLine(g + o.Separator + geometry.AsText());
                 }
                 else
                 {
