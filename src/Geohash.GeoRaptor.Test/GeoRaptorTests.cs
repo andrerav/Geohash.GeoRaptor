@@ -21,28 +21,28 @@ namespace Geohash.GeoRaptor.Tests
 		public void Test_Level_5To6()
 		{
 			var result = GeoRaptor.Compress(_geoHashes, 5, 6);
-			Assert.AreEqual(414, result.Count());
+			Assert.That(result.Count(), Is.EqualTo(414));
 		}
 
 		[Test]
 		public void Test_Level_4To5()
 		{
 			var result = GeoRaptor.Compress(_geoHashes, 4, 5);
-			Assert.AreEqual(50, result.Count());
+			Assert.That(result.Count(), Is.EqualTo(50));
 		}
 
 		[Test]
 		public void Test_Level_3To4()
 		{
 			var result = GeoRaptor.Compress(_geoHashes, 3, 4);
-			Assert.AreEqual(5, result.Count());
+			Assert.That(result.Count(), Is.EqualTo(5));
 		}
 
 		[Test]
 		public void Test_Level_2To6()
 		{
 			var result = GeoRaptor.Compress(_geoHashes, 2, 6);
-			Assert.AreEqual(414, result.Count());
+			Assert.That(result.Count(), Is.EqualTo(414));
 		}
 
 		[Test]
@@ -55,7 +55,7 @@ namespace Geohash.GeoRaptor.Tests
 
 			var actualResult = GeoRaptor.Compress(_geoHashes, 3, 4);
 
-			Assert.IsTrue(actualResult.SetEquals(expectedResult));
+			Assert.That(actualResult, Is.EquivalentTo(expectedResult));
 		}
 
 		[Test]
@@ -81,7 +81,24 @@ namespace Geohash.GeoRaptor.Tests
 
 			var actualResult = GeoRaptor.Compress(geohashes, 4, 5);
 
-			Assert.IsTrue(actualResult.SetEquals(expectedResult));
+			Assert.That(actualResult, Is.EquivalentTo(expectedResult));
+		}
+
+		[Test]
+		public void Test_Does_Not_Compress_Below_Minimum_Precision()
+		{
+			var base32 = new[]
+			{
+				"0", "1", "2", "3", "4", "5", "6", "7",
+				"8", "9", "b", "c", "d", "e", "f", "g",
+				"h", "j", "k", "m", "n", "p", "q", "r",
+				"s", "t", "u", "v", "w", "x", "y", "z"
+			};
+			var geohashes = new HashSet<string>(base32.Select(c => $"w2{c}"));
+
+			var actualResult = GeoRaptor.Compress(geohashes, 3, 6);
+
+			Assert.That(actualResult, Is.EquivalentTo(geohashes));
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿using Geohash.GeoRaptor.Util;
+using Geohash.GeoRaptor.Util;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -28,25 +28,24 @@ namespace Geohash.GeoRaptor
 		public static HashSet<string> Compress(HashSet<string> geohashes, int minimumPrecision, int maximumPrecision)
 		{
 			var removed = new HashSet<string>();
+			var currentResult = new HashSet<string>(geohashes.Select(x => x.Truncate(maximumPrecision)));
 			var temporaryResult = new HashSet<string>();
-			var flag = true;
-			var temporaryResultCount = 0;
 
-			// Input size less than 32
-			if (geohashes.Count == 0)
+			if (currentResult.Count == 0)
 			{
 				return geohashes;
 			}
-			while (flag)
+
+			while (true)
 			{
 				temporaryResult.Clear();
 				removed.Clear();
-				foreach (var geohash in geohashes)
+				foreach (var geohash in currentResult)
 				{
-					var currentGeohashPrecision = geohash.Count();
+					var currentGeohashPrecision = geohash.Length;
 
-					// Compress only if geohash length is greater than the min level
-					if (currentGeohashPrecision >= minimumPrecision)
+					// Compress only if geohash length is greater than the min level.
+					if (currentGeohashPrecision > minimumPrecision)
 					{
 						// Reduce precision by one step for the current geohash. We will use this to generate possible combinations.
 						var parent = geohash.RemoveLast();
@@ -58,7 +57,7 @@ namespace Geohash.GeoRaptor
 							var combinations = new HashSet<string>(GetCombinations(parent));
 
 							// If all generated combinations exist in the input set
-							if (combinations.IsSubsetOf(geohashes))
+							if (combinations.IsSubsetOf(currentResult))
 							{
 								// Add parent to output
 								temporaryResult.Add(parent);
@@ -71,20 +70,23 @@ namespace Geohash.GeoRaptor
 								removed.Add(geohash);
 								temporaryResult.Add(geohash.Truncate(maximumPrecision));
 							}
-							// Break if compressed output size same as the last iteration
-							if (temporaryResultCount == temporaryResult.Count)
-							{
-								flag = false;
-							}
 						}
+					}
+					else
+					{
+						temporaryResult.Add(geohash.Truncate(maximumPrecision));
 					}
 				}
 
-				temporaryResultCount = temporaryResult.Count;
-				geohashes.Clear();
-				geohashes.UnionWith(temporaryResult);
+				if (temporaryResult.SetEquals(currentResult))
+				{
+					geohashes.Clear();
+					geohashes.UnionWith(temporaryResult);
+					return geohashes;
+				}
+
+				currentResult = new HashSet<string>(temporaryResult);
 			}
-			return geohashes;
 		}
 	}
 }
