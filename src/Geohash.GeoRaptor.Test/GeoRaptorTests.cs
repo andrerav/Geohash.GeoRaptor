@@ -254,6 +254,88 @@ namespace Geohash.GeoRaptor.Tests
 			Assert.That(result, Is.EquivalentTo(parents));
 		}
 
+		[Test]
+		public void Test_Case_Insensitive_Comparer_Is_Respected()
+		{
+			var geohashes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			var children = BuildChildren("w21z").ToArray();
+			for (var i = 0; i < children.Length; i++)
+			{
+				geohashes.Add(i % 2 == 0 ? children[i].ToUpperInvariant() : children[i]);
+			}
+
+			var result = GeoRaptor.Compress(geohashes, 4, 5);
+
+			Assert.That(result.Count, Is.EqualTo(1));
+			Assert.That(result.Contains("w21z"), Is.True);
+			Assert.That(result.Comparer, Is.SameAs(StringComparer.OrdinalIgnoreCase));
+			Assert.That(ReferenceEquals(result, geohashes), Is.True);
+		}
+
+		[Test]
+		public void Test_Output_Precision_Stays_Within_Bounds_When_Input_Is_Within_Bounds()
+		{
+			for (var seed = 1; seed <= 25; seed++)
+			{
+				var minimumPrecision = 3;
+				var maximumPrecision = 6;
+				var input = GenerateRandomValidGeohashes(seed, 300, minimumPrecision, 9);
+				var result = GeoRaptor.Compress(new HashSet<string>(input), minimumPrecision, maximumPrecision);
+
+				Assert.That(result.All(x => x.Length >= minimumPrecision), Is.True, $"Minimum precision violated for seed {seed}.");
+				Assert.That(result.All(x => x.Length <= maximumPrecision), Is.True, $"Maximum precision violated for seed {seed}.");
+			}
+		}
+
+		[Test]
+		public void Test_Compress_Is_Order_Independent()
+		{
+			var values = _geoHashes.ToList();
+			var inputA = new HashSet<string>(values);
+			values.Reverse();
+			var inputB = new HashSet<string>(values);
+
+			var resultA = GeoRaptor.Compress(inputA, 4, 5);
+			var resultB = GeoRaptor.Compress(inputB, 4, 5);
+
+			Assert.That(resultA, Is.EquivalentTo(resultB));
+		}
+
+		[Test]
+		public void Test_Invalid_Child_Does_Not_Trigger_Parent_Compression()
+		{
+			var geohashes = BuildChildren("w21z");
+			geohashes.Remove("w21zz");
+			geohashes.Add("w21z@");
+
+			var result = GeoRaptor.Compress(geohashes, 4, 5);
+
+			Assert.That(result, Is.EquivalentTo(geohashes));
+			Assert.That(result.Contains("w21z"), Is.False);
+		}
+
+		[Test]
+		public void Test_Normalization_By_Maximum_Precision_Still_Compresses_Full_Sibling_Block()
+		{
+			var geohashes = new HashSet<string>();
+			var children = BuildChildren("w21zf").ToArray();
+			for (var i = 0; i < children.Length; i++)
+			{
+				if (i % 2 == 0)
+				{
+					geohashes.Add(children[i]);
+				}
+				else
+				{
+					geohashes.Add(children[i] + "abcd");
+				}
+			}
+
+			var result = GeoRaptor.Compress(geohashes, 5, 6);
+
+			Assert.That(result, Is.EquivalentTo(new[] { "w21zf" }));
+		}
+
 		private static HashSet<string> BuildChildren(string parent)
 		{
 			return new HashSet<string>(Base32Chars.Select(c => $"{parent}{c}"));
