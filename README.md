@@ -5,6 +5,9 @@ _Note: This is a port of [ashwin711/georaptor](https://github.com/ashwin711/geor
 Geohash.GeoRaptor is a geohash compression library for efficiently reducing the size of large geohash collections. If you are wondering what geohashes are all about, I can recommend checking out [this website by Movable Type](https://www.movable-type.co.uk/scripts/geohash.html) which explains geohashing in simple terms while at the same time providing a highly visual technical demo.
 
 ## Download
+
+Latest version: v0.2.0 Released 2026-02-18.
+
 | Package | Link | Description |
 | ------- | ---- | ----------- |
 | Geohash.GeoRaptor | [![image](https://img.shields.io/nuget/v/Geohash.GeoRaptor.svg)](https://www.nuget.org/packages/Geohash.GeoRaptor/) | Use this package to install GeoRaptor as a library in your C#/.NET project. |
