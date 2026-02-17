@@ -172,13 +172,12 @@ namespace Geohash.GeoRaptor.CLI
 		public static Polygon BoundingBox(string geohash)
 		{
 			var bb = Geohasher.Value.GetBoundingBox(geohash);
-
 			var coordinates = new List<Coordinate>();
-			coordinates.Add(new Coordinate(bb[3], bb[0]));
-			coordinates.Add(new Coordinate(bb[3], bb[1]));
-			coordinates.Add(new Coordinate(bb[2], bb[1]));
-			coordinates.Add(new Coordinate(bb[2], bb[0]));
-			coordinates.Add(new Coordinate(bb[3], bb[0]));
+			coordinates.Add(new Coordinate(bb.MaxLng, bb.MinLat));
+			coordinates.Add(new Coordinate(bb.MaxLng, bb.MaxLat));
+			coordinates.Add(new Coordinate(bb.MinLng, bb.MaxLat));
+			coordinates.Add(new Coordinate(bb.MinLng, bb.MinLat));
+			coordinates.Add(new Coordinate(bb.MaxLng, bb.MinLat));
 
 			var linearRing = new LinearRing(coordinates.ToArray());
 			var polygon = new Polygon(linearRing);

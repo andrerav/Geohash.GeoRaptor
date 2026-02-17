@@ -1,90 +1,119 @@
-﻿using Geohash.GeoRaptor.Util;
+using Geohash.GeoRaptor.Util;
+using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Geohash.GeoRaptor
 {
 	/// <summary>
-	/// Geohash.GeoRaptor is a geohash compression library for efficiently reducing the size of large geohash collections. 
+	/// Geohash.GeoRaptor is a geohash compression library for efficiently reducing the size of large geohash collections.
 	/// </summary>
 	public static class GeoRaptor
 	{
-		// Combination generator for a given geohash at the next level
-		private static List<string> GetCombinations(string str)
+		private static readonly char[] Base32Chars = "0123456789bcdefghjkmnpqrstuvwxyz".ToCharArray();
+
+		/// <summary>
+		/// Checks whether all 32 direct child geohashes for a given parent exist in the current working set.
+		/// </summary>
+		/// <param name="geohashes">Current working set used for compression checks.</param>
+		/// <param name="parent">Parent geohash to evaluate.</param>
+		/// <returns><c>true</c> when all direct children are present; otherwise <c>false</c>.</returns>
+		private static bool HasAllChildren(HashSet<string> geohashes, string parent)
 		{
-			var base32 = new List<string> { "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "b", "c", "d", "e", "f", "g", 
-											"h", "j", "k", "m", "n", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
-			return (from i in base32
-					select (str + $"{i}")).ToList();
+			foreach (var c in Base32Chars)
+			{
+				if (!geohashes.Contains(parent + c))
+				{
+					return false;
+				}
+			}
+
+			return true;
 		}
 
 		/// <summary>
 		/// Compresses the input set of geohashes within the given minimum and maximum precision levels.
 		/// </summary>
-		/// <param name="geohashes">A set of geohashes. Varying precision levels are ok</param>
-		/// <param name="minimumPrecision">The minimum precision level to maintain for the compressed output</param>
-		/// <param name="maximumPrecision">The maximum precision level to maintain for the compressed output</param>
-		/// <returns></returns>
+		/// <param name="geohashes">A set of geohashes. Varying precision levels are ok.</param>
+		/// <param name="minimumPrecision">The minimum precision level to maintain for the compressed output.</param>
+		/// <param name="maximumPrecision">The maximum precision level to maintain for the compressed output.</param>
+		/// <returns>A compressed set of geohashes.</returns>
 		public static HashSet<string> Compress(HashSet<string> geohashes, int minimumPrecision, int maximumPrecision)
 		{
-			var removed = new HashSet<string>();
-			var temporaryResult = new HashSet<string>();
-			var flag = true;
-			var temporaryResultCount = 0;
+			if (geohashes is null)
+			{
+				throw new ArgumentNullException(nameof(geohashes));
+			}
 
-			// Input size less than 32
-			if (geohashes.Count == 0)
+			var removed = new HashSet<string>(geohashes.Comparer);
+			var parentCompressionCache = new Dictionary<string, bool>(geohashes.Comparer);
+			var currentResult = new HashSet<string>(geohashes.Comparer);
+			var temporaryResult = new HashSet<string>(geohashes.Comparer);
+
+			foreach (var geohash in geohashes)
+			{
+				currentResult.Add(geohash.Truncate(maximumPrecision));
+			}
+
+			if (currentResult.Count == 0)
 			{
 				return geohashes;
 			}
-			while (flag)
+
+			while (true)
 			{
 				temporaryResult.Clear();
 				removed.Clear();
-				foreach (var geohash in geohashes)
-				{
-					var currentGeohashPrecision = geohash.Count();
+				parentCompressionCache.Clear();
 
-					// Compress only if geohash length is greater than the min level
-					if (currentGeohashPrecision >= minimumPrecision)
+				var anyCompression = false;
+				foreach (var geohash in currentResult)
+				{
+					var currentGeohashPrecision = geohash.Length;
+
+					// Compress only if geohash length is greater than the min level.
+					if (currentGeohashPrecision > minimumPrecision)
 					{
-						// Reduce precision by one step for the current geohash. We will use this to generate possible combinations.
 						var parent = geohash.RemoveLast();
 
-						// Check that the current geohash has not already been compressed
+						// Skip geohashes already accounted for in this iteration.
 						if (!removed.Contains(parent) && !removed.Contains(geohash))
 						{
-							// Generate combinations
-							var combinations = new HashSet<string>(GetCombinations(parent));
-
-							// If all generated combinations exist in the input set
-							if (combinations.IsSubsetOf(geohashes))
+							if (!parentCompressionCache.TryGetValue(parent, out var canCompressParent))
 							{
-								// Add parent to output
-								temporaryResult.Add(parent);
+								canCompressParent = HasAllChildren(currentResult, parent);
+								parentCompressionCache[parent] = canCompressParent;
+							}
 
-								// Add parent to the set of processed geohashes
+							if (canCompressParent)
+							{
+								temporaryResult.Add(parent);
 								removed.Add(parent);
+								anyCompression = true;
 							}
 							else
 							{
 								removed.Add(geohash);
-								temporaryResult.Add(geohash.Truncate(maximumPrecision));
-							}
-							// Break if compressed output size same as the last iteration
-							if (temporaryResultCount == temporaryResult.Count)
-							{
-								flag = false;
+								temporaryResult.Add(geohash);
 							}
 						}
 					}
+					else
+					{
+						temporaryResult.Add(geohash);
+					}
 				}
 
-				temporaryResultCount = temporaryResult.Count;
-				geohashes.Clear();
-				geohashes.UnionWith(temporaryResult);
+				if (!anyCompression || temporaryResult.SetEquals(currentResult))
+				{
+					geohashes.Clear();
+					geohashes.UnionWith(temporaryResult);
+					return geohashes;
+				}
+
+				var swap = currentResult;
+				currentResult = temporaryResult;
+				temporaryResult = swap;
 			}
-			return geohashes;
 		}
 	}
 }
